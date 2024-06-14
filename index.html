@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="styles.css?ver=1.060">
+    <meta name="theme-color" content="#092635">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="shovel">
+    <meta name="theme-color" content="#092635">
+    <meta name="msapplication-navbutton-color" content="#092635">
+    <meta name="msapplication-starturl" content="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <script async src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Check if Telegram WebApp environment is available
+            if (window.Telegram.WebApp) {
+                // Expand the WebApp to full screen
+                window.Telegram.WebApp.expand();
+            }
+        });
+
+        /*const overflow = 10
+        document.body.style.overflowY = 'hidden'
+        document.body.style.marginTop = `${overflow}px`
+        document.body.style.height = window.innerHeight +  "px"
+        document.body.style.paddingBottom = `${overflow}px`
+        window.scrollTo(0, overflow)
+
+        const content = document.querySelector('.body');
+        let startY = 0;
+        let currentY = 0;
+
+        const onTouchStart = (e) => {
+            startY = e.touches[0].clientY - currentY;
+        };
+
+        const onTouchMove = (e) => {
+            e.preventDefault();
+            currentY = e.touches[0].clientY - startY;
+            // Ограничиваем прокрутку, чтобы не двигаться слишком далеко
+            currentY = Math.max(Math.min(currentY, 0), -window.innerHeight);
+            content.style.transform = `translateY(${currentY}px)`;
+        };
+
+        document.documentElement.addEventListener('touchstart', onTouchStart, { passive: false });
+        document.documentElement.addEventListener('touchmove', onTouchMove, { passive: false });
+
+        window.Telegram.WebApp.onEvent('backButtonClicked', () => {
+            window.location.href = '/';
+        });
+    */
+    </script>
+    <div class="container">
+        
+        <div class="header">
+            <div class="top-line">
+                <div class="user-info">
+                    <img id="avatar">
+                    <div id="username">User</div>
+                </div>
+
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="showPage('game')" style="cursor: pointer;">
+                    <rect width="18" height="18" fill="#092635" />
+                    <rect x="8" width="2" height="2" rx="1" fill="#9EC8B9" />
+                    <rect x="8" y="8" width="2" height="2" rx="1" fill="#9EC8B9" />
+                    <rect x="8" y="16" width="2" height="2" rx="1" fill="#9EC8B9" />
+                </svg>
+            </div>
+
+            <div class="stats">
+                <div class="stat1">Blocks per tap<br> <span id="tapProfit">100</span></div>
+                <div class="stat2">Blocks to next level<br> <span id="upgradeCoins">1000</span></div>
+                <div class="stat3">Blocks per hour<br> <span id="hourlyProfit">6000</span></div>
+            </div>
+
+        </div>
+
+        <div id="game" class="page active">
+
+
+            
+            <div class="balance">
+                <div class="coins-points">
+                    <div class="coins"><span class="coins-span">Blocks</span><br> <span id="coins">0</span></div>
+                    <div class="stat4"><span class="coins-span">Coins</span><br> <span id="bonusPoints">0</span></div>
+                </div>
+
+                <div class="level-block">
+                    <div class="level-name"><span id="levelname">Beginner</span></div>
+                    <div class="level">lvl: <span id="level">1/9</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+            </div>
+
+            
+            <div id="lopataImage" class="character-background">
+                <div  class="character">
+                    <img src="img/shovel.png?v=2" alt="Shovel"  draggable="false">
+                </div>
+            </div>
+            <div class="energy">
+                <div><span id="energy">6000/6000</span></div>
+                <button onclick="showPage('up')" class="up">UP</button>
+            </div>
+            
+
+
+        </div>
+        <div id="donate" class="page">
+            <div class="donate-top">
+                <button id="increaseChance" onclick="increaseChance()" class="boost-btn">Increase drop chance by 10% for 1 hour (500 coins)</button>
+                <button id="improveSkin" onclick="improveSkin()" class="boost-btn">Improve shovel skin (500 coins)</button>
+                
+                <button id="prog" onclick="prog()" class="boost-btn">Feed the developer</button>
+            </div>
+            
+
+            <div class="donate-bottom">
+                <span>In development</span>
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+
+                <button id="prog" onclick="prog()" class="boost-btn">Claim</button>
+                <button id="prog" onclick="prog()" class="boost-btn">World map and islands</button>
+                <button id="prog" onclick="prog()" class="boost-btn">NFT</button>
+            </div>
+        </div>
+
+        <div id="mine" class="page">
+            <!-- "Mine" page content -->
+            <div class="tabs">
+                <button onclick="showTab('ore')" id="oreButton">Ore</button>
+                <button onclick="showTab('gold')" id="goldButton">Gold</button>
+                <button onclick="showTab('coal')" id="coalButton">Coal</button>
+            </div>
+
+            <div id="ore" class="quests">
+                <button>
+                    <div class="quest-top f-img">
+                        <span class="quest-name">Ore Mine</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+                <button>
+                    <div class="quest-top t-img">
+                        <span class="quest-name">Deposit</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+                <button>
+                    <div class="quest-top f-img">
+                        <span class="quest-name">Ore Mine</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+                <button>
+                    <div class="quest-top t-img">
+                        <span class="quest-name">Deposit</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+                <button>
+                    <div class="quest-top f-img">
+                        <span class="quest-name">Ore Mine</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+                <button>
+                    <div class="quest-top t-img">
+                        <span class="quest-name">Deposit</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+                <button>
+                    <div class="quest-top f-img">
+                        <span class="quest-name">Ore Mine</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+                <button>
+                    <div class="quest-top t-img">
+                        <span class="quest-name">Deposit</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+
+            </div>
+
+            <div id="gold" class="quests">
+                <button>
+                    <div class="quest-top f-img">
+                        <span class="quest-name">Ore Mine</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+                <button>
+                    <div class="quest-top t-img">
+                        <span class="quest-name">Deposit</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+                <button>
+                    <div class="quest-top f-img">
+                        <span class="quest-name">Ore Mine</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+                <button>
+                    <div class="quest-top t-img">
+                        <span class="quest-name">Deposit</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+                
+            </div>
+
+            <div id="coal" class="quests">
+                <button>
+                    <div class="quest-top f-img">
+                        <span class="quest-name">Ore Mine</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+                <button>
+                    <div class="quest-top t-img">
+                        <span class="quest-name">Deposit</span>
+                        <span class="quest-bonus">+12k</span>
+                    </div>
+                    <div class="quest-bottom">
+                        <span class="quest-lvl">lvl 1</span>
+                        <span class="quest-coast">10 500</span>
+                    </div>
+                </button>
+
+                
+            </div>
+            
+        </div>
+
+        <div id="friends" class="page">
+            <div class="friends-list">
+                <button class="invite">Invite a friend</button>
+                <button>Friend 1</button>
+                <button>Friend 2</button>
+                <button>Friend 3</button>
+                <button>Friend 4</button>
+                <button>Friend 5</button>
+                <button>Friend 6</button>
+            </div>
+        </div>
+        
+        <div id="earn" class="page">
+            <div class="friends-list">
+                <button class="invite">Subscribe to the exchange</button>
+                <button>Event</button>
+                <button>Event</button>
+                <button>Event</button>
+                <button>Event</button>
+                <button>Event</button>
+                <button>Event</button>
+            </div>
+        </div>
+        
+        <div id="up" class="page">
+            <button onclick="addEnergy()" class="boost-btn">Recharge energy (1000 coins)</button>
+            <button onclick="increaseMaxEnergy()" class="boost-btn">Add +1k energy (2000 coins)</button>
+            <button onclick="increaseTapProfit()" class="boost-btn">Increase tap profit (5000 coins)</button>
+        </div>
+        
+        <nav>
+            <button onclick="showPage('donate')" id="donateButton">Donate</button>
+            <button onclick="showPage('mine')" id="mineButton">Mine</button>
+            <button onclick="showPage('friends')" id="friendsButton">Friends</button>
+            <button onclick="showPage('earn')" id="earnButton">Earn</button>
+        </nav>
+
+
+    </div>
+    <script src="script.js?v=1.035"></script>
+
+    
+
+</body>
+</html>
